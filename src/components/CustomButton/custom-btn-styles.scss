@@ -1,0 +1,42 @@
+.small, .large{
+    line-height: 1.5715;
+    position: relative;
+    display: inline-block;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    background-image: none;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    user-select: none;
+    touch-action: manipulation;
+    font-size: 16px;
+    border-radius: 4px;
+    color:white;
+    background: #06AF76;
+    outline: none;
+    border: none;
+    font-weight: 600;
+    transition:all .2s ease-out;
+    &:active
+    {
+      outline: none;
+      border: none;
+    }
+    &:hover{
+      background: rgba(6, 175, 118, .5);
+    }
+}
+.small{
+  padding: 10px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.large{
+    padding: 15px 120px;
+    width: 100%;
+}

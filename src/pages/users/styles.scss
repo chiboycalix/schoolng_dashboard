@@ -1,0 +1,30 @@
+.users-wrapper{
+
+  .users-header{
+
+  }
+
+  .table-wrapper{
+
+    .ant-table-small .ant-table-thead {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+    .ant-table-small .ant-table-thead > tr > th {
+      background-color: #031A2F;
+      color: #FFFFFF;
+      padding: 1rem;
+      font-weight: 400;
+    }
+
+    .ant-table-row{
+      cursor: pointer;
+      border-bottom: 2px solid #C4D1F0;
+
+      &:hover, &:active{
+        background: #EB59331A 0% 0% no-repeat padding-box !important;
+      }
+    }
+    
+  }
+}

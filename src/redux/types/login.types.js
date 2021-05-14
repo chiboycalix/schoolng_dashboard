@@ -1,0 +1,5 @@
+export const loginTypes = {
+  LOGIN_LOADING: 'LOGIN_LOADING',
+  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
+  LOGIN_FAILED: 'LOGIN_FAILED'
+}

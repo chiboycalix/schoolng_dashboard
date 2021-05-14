@@ -1,0 +1,182 @@
+def AnsibleDeploy(){
+    sh '''
+        touch hosts.ini && echo ${hosts_ini} | base64 --decode > hosts.ini
+        ANSIBLE_HOST_KEY_CHECKING=false ansible-playbook -i hosts.ini ansible/playbook.yml
+     '''
+}
+
+pipeline {
+    environment {
+        IMG_TAG="${sh(script: 'echo \$GIT_COMMIT | cut -c -7 | tr -d \'[:space:]\' ', returnStdout: true ) }"
+        APP_NAME="gsiv2-portal-frontend"
+    }
+
+    agent {
+        dockerfile {
+            dir 'jenkins/'
+        }
+    }
+
+    stages {
+        stage('Checkout Target branch'){
+            when {changeRequest()}
+            steps{
+                git branch: env.CHANGE_TARGET, credentialsId: 'github-token', url: env.GIT_URL
+                git branch: env.CHANGE_BRANCH, credentialsId: 'github-token', url: env.GIT_URL
+            }
+        }
+
+        stage('Install dependencies'){
+            steps{
+                sh 'npm i'
+             }
+        }
+        stage('Unit Tests'){
+            steps{
+                sh 'ls -al'
+                sh 'npm test --coverage ' 
+                sh 'ls -la coverage'
+            }
+        }
+
+        stage('SonarScan'){
+            parallel{
+                stage("SonarQube Branch analysis") {
+                    when {not {changeRequest()}}
+                    steps {
+                        withSonarQubeEnv('SonarCloud') {
+                            sh 'sonar-scanner -Dsonar.branch.name=${BRANCH_NAME}'
+                            
+                        }
+                    }
+                }
+                stage("SonarQube PR analysis") {
+                    when {changeRequest()}
+                    steps {
+                        withSonarQubeEnv('SonarCloud') {
+                            sh 'env'
+                            sh 'sonar-scanner -Dsonar.pullrequest.key=${CHANGE_ID}'
+                        }
+                    }
+                }
+
+            }
+        }
+
+
+        stage('Inject Environment Variables'){
+            parallel{
+                stage('DEV'){
+                    when {branch 'dev'}
+                    steps{
+                        withCredentials([file(credentialsId: 'gsiv2-dev', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        sh 'env'
+                        sh 'touch .env && echo ${fe_env} | base64 --decode > .env'
+                    }
+                }
+                stage('QA'){
+                    when {branch 'qa'}
+                    steps{
+                        withCredentials([file(credentialsId: 'gsiv2-qa', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        sh 'touch .env && echo ${fe_env} | base64 --decode > .env'
+                    }
+                }
+                stage('Certification'){
+                    when {branch 'certification'}
+                    steps{
+                        withCredentials([file(credentialsId: 'gsiv2-cert', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        sh 'touch .env && echo ${fe_env} | base64 --decode > .env'
+                    }
+                }
+                stage('Staging'){
+                    when {branch 'staging'}
+                    steps{
+                        withCredentials([file(credentialsId: 'gsiv2-staging', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        sh 'touch .env && echo ${fe_env} | base64 --decode > .env'
+                    }
+                }
+                stage('Prod'){
+                    when {branch 'master'}
+                    steps{
+                        withCredentials([file(credentialsId: 'gsiv2-prod', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        sh 'touch .env && echo ${fe_env} | base64 --decode > .env'
+                    }
+                }
+                stage('DR'){
+                    when {branch 'dr'}
+                    steps{
+                        withCredentials([file(credentialsId: 'gsiv2-dr', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        sh 'touch .env && echo ${fe_env} | base64 --decode > .env'
+                    }
+                }
+            }
+        }
+
+
+        stage('Build app image'){
+            steps{
+                sh 'rm -rf node_modules .git'
+                sh 'docker build -t ${APP_NAME}:$IMG_TAG .'
+                sh 'docker save -o ${APP_NAME}:$IMG_TAG.tar ${APP_NAME}:$IMG_TAG'
+                sh 'ls -la'
+            }
+        }
+
+        stage('Deploy'){
+            parallel{
+                stage('Deploy to dev') {
+                    when { branch 'dev'}
+                    steps {
+                        withCredentials([file(credentialsId: 'gsiv2-dev', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        AnsibleDeploy()
+                    }
+                }
+
+                stage('Deploy to QA') {
+                    when { branch 'qa'}
+                    steps {
+                        withCredentials([file(credentialsId: 'gsiv2-qa', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        AnsibleDeploy()
+                    }
+                }
+
+                stage('Deploy to Certification') {
+                    when { branch 'certification'}
+                    steps {
+                        withCredentials([file(credentialsId: 'gsiv2-cert', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        AnsibleDeploy()
+                    }
+                }
+
+                stage('Deploy to Staging') {
+                    when { branch 'staging' }
+                    steps {
+                        withCredentials([file(credentialsId: 'gsiv2-staging', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        AnsibleDeploy()
+                    }
+                }
+                stage('Deploy to Prod') {
+                    when { branch 'master' }
+                    steps {
+                        withCredentials([file(credentialsId: 'gsiv2-prod', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        AnsibleDeploy()
+                    }
+                }
+
+                stage('Deploy to Disaster Recovery') {
+                    when { branch 'dr' }
+                    steps {
+                        withCredentials([file(credentialsId: 'gsiv2-dr', variable: 'PIPELINE_ENV')]) { load "$PIPELINE_ENV"}
+                        AnsibleDeploy()
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+    }
+}

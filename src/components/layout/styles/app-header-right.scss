@@ -1,0 +1,28 @@
+.app-header-right {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    float: right;
+    overflow: hidden;
+    align-items: center;
+    padding: 2rem;
+
+    .header-right{
+        display: flex;
+        justify-content: space-between;
+        width:300px;
+        align-items: center;
+
+        svg{
+            font-size: 25px;
+            cursor: pointer;
+        }
+    }
+}
+
+@media (max-width: 414px) {
+    .app-header-right {
+    .custom-user-name {
+        display: none;
+    }
+}
+}

@@ -1,0 +1,17 @@
+/**
+ * /* eslint-disable import/extensions
+ *
+ * @format
+ */
+
+/** @format */
+
+import { combineReducers } from 'redux';
+
+import { loginReducer } from './login/login.reducer';
+
+const rootReducer = combineReducers({
+	login: loginReducer,
+});
+
+export default rootReducer;

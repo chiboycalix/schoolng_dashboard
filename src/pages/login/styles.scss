@@ -1,0 +1,28 @@
+.login-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:100vh;
+
+  .login-content{
+    width: 40%;
+    box-shadow: 1px 20px 30px rgba(0, 0,  0, .25);
+    padding: 7rem 5rem;
+
+    .img-logo-section{
+      text-align: center;
+
+      img{
+        width:70px;
+        margin-bottom: 2rem;
+      }
+    }
+
+    .form-wrapper{
+
+      .btn-wrapper{
+        text-align: center;
+      }
+    }
+    }
+}

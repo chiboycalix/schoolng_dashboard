@@ -1,0 +1,136 @@
+.overview-wrapper{
+  width: 100%;
+
+  .overview-cards-wrapper{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .overview-campaign-text{
+    margin-top: 5rem;
+
+    h1{
+      text-align: left;
+      font-weight: 600;
+      letter-spacing: 0px;
+      color: #000000;
+      opacity: 1;
+    }
+  }
+  .overview-campaing-engaging-gists{
+    display: flex;
+    justify-content: space-between;
+    gap: 2%;
+    
+
+    .campaign-wrapper{
+      flex-basis: 70%;
+
+      .table-wrapper{
+        border: 1px solid black;
+        background: #FFFFFF 0% 0% no-repeat padding-box;
+        border: 1px solid #EDF0F7;
+        border-radius: 8px;
+        opacity: 1;
+        padding: 0 2rem;
+
+        .table-header{
+          padding:2rem 0;
+          display: flex;
+          justify-content:space-between;
+
+          .table-header-left{
+            display: flex;
+            align-items:center;
+            svg{
+              font-size: 30px;
+              cursor: pointer;
+              margin-right: 1rem;
+            }
+            span{
+              text-align: left;
+              font: normal normal normal 14px/21px Poppins;
+              letter-spacing: 0px;
+              color: #EB5933;
+              opacity: 1;
+            }
+          }
+        }
+
+        .ant-table-small .ant-table-thead > tr > th {
+          background-color: #031A2F;
+          color: #FFFFFF;
+        }
+
+        .ant-table-row{
+          cursor: pointer;
+
+          &:hover, &:active{
+            background: #EB59331A 0% 0% no-repeat padding-box !important;
+          }
+        }
+      }
+    }
+
+    .most-engaging-gists-wrapper{
+      flex: 1;
+      background: #FFFFFF 0% 0% no-repeat padding-box;
+      border: 1px solid #EDF0F7;
+      border-radius: 8px;
+      opacity: 1;
+      padding: 2rem;
+    }
+  }
+
+  .charts-section{
+    margin-top: 5rem;
+    border-radius: 8px;
+    border-radius: 8px;
+    .bar-chart{
+      border-radius: 8px;
+    }
+
+    .pie-and-line{
+      width: 100%;
+      display:flex;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-top: 5rem;
+
+      .pie-chart{
+        flex-basis: 60%;
+        background: #FFFFFF 0% 0% no-repeat padding-box;
+        border-radius: 8px;
+      }
+      .line-chart{
+        flex: 1;
+        background: #FFFFFF 0% 0% no-repeat padding-box;
+        border-radius: 8px;
+      }
+    }
+  }
+
+  .app-issues-section{
+    margin-top: 5rem;
+    .ant-table-small .ant-table-thead {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+    .ant-table-small .ant-table-thead > tr > th {
+      background-color: #031A2F;
+      color: #FFFFFF;
+      padding: 1rem;
+      font-weight: 400;
+    }
+
+    .ant-table-row{
+      cursor: pointer;
+      border-bottom: 2px solid #C4D1F0;
+
+      &:hover, &:active{
+        background: #EB59331A 0% 0% no-repeat padding-box !important;
+      }
+    }
+  }
+}

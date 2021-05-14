@@ -1,0 +1,31 @@
+.card-wrapper{
+  flex: 150px;;
+  border: 1px solid red;
+  background: #FCFCFD 0% 0% no-repeat padding-box;
+  border: 1px solid #EEF1F8;
+  border-radius: 8px;
+  opacity: 1;
+  padding: 2rem 1.5rem;
+
+  h1{
+    text-align: left;
+    font-weight: normal;
+    letter-spacing: 0px;
+    color: #000000;
+    opacity: 1;
+  }
+  div{
+    display: flex;
+    align-items: center;
+    img{
+      margin-right: 1rem;
+    }
+    span{
+      text-align: left;
+      font: normal normal normal 25px/38px Poppins;
+      letter-spacing: 0px;
+      color: #000000;
+      opacity: 1;
+    }
+  }
+}
